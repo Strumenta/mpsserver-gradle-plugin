@@ -9,6 +9,7 @@ import org.gradle.api.tasks.Copy
 class MpsServerGradlePluginExtension {
     String mpsVersion = '2019.3.1'
 	String mpsServerVersion = '1.1.0-rc1'
+	String antVersion = '1.10.1'
 	File customMpsProjectPath = null
 	
 	File artifactsDir(project) {
@@ -84,38 +85,43 @@ class MpsServerGradlePlugin implements Plugin<Project> {
                 println extension.message
             }
         }
-        project.task('resolveMps', type: Copy) {        	
-			if (!project.hasProperty('mpsPath')) {
-				println "Downloading MPS in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
-				def mpsConf = project.configurations.getAll().find { it.name == 'mps' }
-				def mpsFound = mpsConf != null
-				if (!mpsFound) {
-					throw new GradleException('mps configuration not present')
+        project.task('resolveMps', type: Copy) {
+			doLast {
+				if (!project.hasProperty('mpsPath')) {
+					println "Downloading MPS in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
+					def mpsConf = project.configurations.getAll().find { it.name == 'mps' }
+					def mpsFound = mpsConf != null
+					if (!mpsFound) {
+						throw new GradleException('mps configuration not present')
+					}
+					println "Mps configuration found: ${mpsConf}"
+					def mpsResolved = mpsConf.resolve()
+					if (mpsConf.resolve().size() == 0) {
+						throw new GradleException('mps configuration present but empty')
+					}
+					from {
+						project.configurations.mps.resolve().collect { project.zipTree(it) }
+					}
+					into project.mpsserver.mpsDir(project)
+				} else {
+					println "MPS already installed in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
 				}
-				println "Mps configuration found: ${mpsConf}"
-				def mpsResolved = mpsConf.resolve()
-				if (mpsConf.resolve().size() == 0) {
-					throw new GradleException('mps configuration present but empty')	
-				}
-				from {
-					project.configurations.mps.resolve().collect { project.zipTree(it) }
-				}
-				into project.mpsserver.mpsDir(project)
-			} else {
-				println "MPS already installed in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
 			}
         }
         project.task('resolveMpsArtifacts', type: Copy) {
-        	def mpsArtifactsConf = project.configurations.getAll().find { it.name == 'mpsArtifacts' }
-			def mpsArtifactsFound = mpsArtifactsConf != null
-			if (!mpsArtifactsFound) {
-				println("no mpsArtifacts configuration, assuming no dependencies to other plugins")
-				return
-			}        	
-			from {
-				project.configurations.mpsArtifacts.resolve().collect { project.zipTree(it) }
+			doLast {
+				def mpsArtifactsConf = project.configurations.getAll().find { it.name == 'mpsArtifacts' }
+				def mpsArtifactsFound = mpsArtifactsConf != null
+				if (!mpsArtifactsFound) {
+					println("no mpsArtifacts configuration, assuming no dependencies to other plugins")
+					return
+				}
+				from {
+					project.configurations.mpsArtifacts.resolve().collect { project.zipTree(it) }
+				}
+				into project.mpsserver.artifactsDir(
+						project)
 			}
-			into project.mpsserver.artifactsDir(project)
         }
         project.task('setuplocal') {
         	dependsOn project.resolveMps, project.resolveMpsArtifacts
@@ -266,15 +272,21 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 			}
 		}
 		project.task('launchMpsServer', dependsOn: [project.resolveMps, project.resolveMpsArtifacts, project.generateAntBuildForMpsServer]) {
-			def antLibConf = project.configurations.getAll().find { it.name == 'ant_lib' }
-			def antLibFound = antLibConf != null
-			if (!antLibFound) {
-				throw new GradleException("no ant_lib configuration")
-			}
-			if (antLibConf.resolve().size() == 0) {
-				throw new GradleException('ant_lib configuration present but empty')	
-			}
 			doLast {
+				def antLibConf = project.configurations.getAll().find { it.name == 'ant_lib' }
+				def antLibFound = antLibConf != null
+				if (!antLibFound) {
+					throw new GradleException("no ant_lib configuration")
+				}
+				if (antLibConf.getAllDependencies().isEmpty()) {
+					println("no ant_lib configuration, adding default one")
+					project.dependencies {
+						ant_lib "org.apache.ant:ant-junit:${project.mpsserver.antVersion}"
+					}
+				}
+				if (antLibConf.resolve().size() == 0) {
+					throw new GradleException('ant_lib configuration present but empty')
+				}
 				project.javaexec {
 					environment('MPSSERVER_PROJECT_FILE_PATH', project.mpsserver.mpsProjectPath(project))
 					main = "org.apache.tools.ant.launch.Launcher"
