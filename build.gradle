@@ -1,20 +1,19 @@
-import groovy.xml.*
-
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
-    //id 'groovy'
     id 'groovy-gradle-plugin'
 }
 
 group "com.strumenta.mpsserver"
 description = "MpsServer"
-version = '0.1.0-snapshot'
+version = '0.1.0'
 
 gradlePlugin {
     plugins {
-        simplePlugin {
+        create("mpsserver") {
             id = "com.strumenta.mpsserver"
+            displayName = "MPSServer gradle plugin"
+            description = "This should make easy to use the MPSServer with gradle"
             implementationClass = 'com.strumenta.mpsserver.MpsServerGradlePlugin'
         }
     }
@@ -39,5 +38,8 @@ dependencies {
 	ant_lib "org.apache.ant:ant-junit:1.10.1"
 }
 
-// // Apply the plugin
-// apply plugin: MpsServerGradlePlugin
+pluginBuilde {
+	website = "https://github.com/Strumenta/mpsserver-gradle-plugin"
+	vcsUrl = "https://github.com/Strumenta/mpsserver-gradle-plugin.git"
+	tags = listOf("Jetbrains MPS", "MPSServer")
+}

@@ -98,8 +98,8 @@ class ResolveMpsArtifacts extends DefaultTask {
 		if (conf.getAllDependencies().isEmpty()) {
 			println("no mpsArtifacts configuration dependency, adding default one")
 			project.dependencies {
-				mpsArtifacts "com.strumenta.mpsserver:mpsserver-core:${project.mpsserver.mpsserverVersion}"
-				mpsArtifacts "com.strumenta.mpsserver:mpsserver-launcher:${project.mpsserver.mpsserverVersion}"
+				mpsArtifacts "com.strumenta.mpsserver:mpsserver-core:${project.mpsserver.mpsServerVersion}"
+				mpsArtifacts "com.strumenta.mpsserver:mpsserver-launcher:${project.mpsserver.mpsServerVersion}"
 			}
 		} else {
 			println("mpsArtifacts configuration is not empty, using existing values")
