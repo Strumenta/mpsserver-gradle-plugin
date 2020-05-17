@@ -1,0 +1,87 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+group "com.strumenta.mpsserver"
+description = "MpsServer"
+version = '0.1.0-snapshot'
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = "com.strumenta.mpsserver"
+            implementationClass = 'com.strumenta.mpsserver.MpsServerGradlePlugin'
+        }
+    }
+}
+
+configurations {
+	mps
+}
+
+ext.mpsVersion = '2019.3.1'
+
+repositories {	
+	mavenCentral()
+	maven {
+		url 'https://projects.itemis.de/nexus/content/groups/OS/'
+	}
+}
+
+dependencies {
+	mps "com.jetbrains:mps:$mpsVersion"
+}
+
+class MpsServerGradlePluginExtension {
+    String message = 'Hello from GreetingPlugin'
+    String mpsVersion = '2019.3.1'
+	String mpsServerVersion = '1.1.0-rc1'
+	//File artifactsDir = new File(rootDir, 'artifacts')
+	//File mpsDir = project.hasProperty('mpsPath') ? new File("${mpsPath}") : new File(artifactsDir, 'mps')
+
+	File artifactsDir(project) {
+		return new File(project.rootDir, 'artifacts')
+	}
+
+	File mpsDir(project) {
+		return project.hasProperty('mpsPath') ? new File("${mpsPath}") : new File(artifactsDir(project), 'mps')		
+	}
+}
+
+class MpsServerGradlePlugin implements Plugin<Project> {
+    void apply(Project project) {
+        def extension = project.extensions.create('mpsserver', MpsServerGradlePluginExtension)    	        
+        project.task('hello') {
+            doLast {
+                println extension.message
+            }
+        }
+        project.task('resolveMps', type: Copy) {        	
+			if (!project.hasProperty('mpsPath')) {
+				println "Downloading MPS in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
+				def mpsConf = project.configurations.getAll().find { it.name == 'mps' }
+				def mpsFound = mpsConf != null
+				if (!mpsFound) {
+					throw new GradleException('mps configuration not present')
+				}
+				println "Mps configuration found: ${mpsConf}"
+				def mpsResolved = mpsConf.resolve()
+				if (mpsConf.resolve().size() == 0) {
+					throw new GradleException('mps configuration present but empty')	
+				}
+				from {
+					project.configurations.mps.resolve().collect { project.zipTree(it) }
+				}
+				into project.mpsserver.mpsDir(project)
+			} else {
+				println "MPS already installed in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
+			}
+        }
+    }
+}
+
+// Apply the plugin
+apply plugin: MpsServerGradlePlugin
+
+mpsserver.message = 'foo'
