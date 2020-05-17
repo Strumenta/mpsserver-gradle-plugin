@@ -1,5 +1,11 @@
 package com.strumenta.mpsserver
 
+import groovy.xml.MarkupBuilder
+import org.gradle.api.GradleException
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
+
 class MpsServerGradlePluginExtension {
     String mpsVersion = '2019.3.1'
 	String mpsServerVersion = '1.1.0-rc1'

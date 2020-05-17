@@ -3,6 +3,8 @@ import groovy.xml.*
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
+    //id 'groovy'
+    id 'groovy-gradle-plugin'
 }
 
 group "com.strumenta.mpsserver"
