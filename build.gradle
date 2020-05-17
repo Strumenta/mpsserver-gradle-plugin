@@ -38,7 +38,7 @@ dependencies {
 	ant_lib "org.apache.ant:ant-junit:1.10.1"
 }
 
-pluginBuilde {
+pluginBundle {
 	website = "https://github.com/Strumenta/mpsserver-gradle-plugin"
 	vcsUrl = "https://github.com/Strumenta/mpsserver-gradle-plugin.git"
 	tags = listOf("Jetbrains MPS", "MPSServer")
