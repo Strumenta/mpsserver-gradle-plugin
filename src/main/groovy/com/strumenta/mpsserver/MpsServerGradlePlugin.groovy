@@ -100,6 +100,7 @@ class ResolveMpsArtifacts extends DefaultTask {
 			project.dependencies {
 				mpsArtifacts "com.strumenta.mpsserver:mpsserver-core:${project.mpsserver.mpsServerVersion}"
 				mpsArtifacts "com.strumenta.mpsserver:mpsserver-launcher:${project.mpsserver.mpsServerVersion}"
+				mpsArtifacts "com.strumenta.mpsserver:mpsserver-extensionkit:${project.mpsserver.mpsServerVersion}"
 			}
 		} else {
 			println("mpsArtifacts configuration is not empty, using existing values")
@@ -159,6 +160,10 @@ class MpsServerGradlePluginExtension {
 		return new File("${artifactsDir(project).getAbsolutePath()}/MpsServer-core")
 	}
 
+	File mpsServerExtensionDir(project) {
+		return new File("${artifactsDir(project).getAbsolutePath()}/MpsServer-extensionkit")
+	}
+
 	File mpsServerLauncherDir(project) {
 		return new File("${artifactsDir(project).getAbsolutePath()}/MpsServer-launcher")
 	}
@@ -184,6 +189,7 @@ class MpsServerGradlePluginExtension {
 		return [
 			"-Dartifacts.MpsServer-core=${mpsServerCoreDir(project)}",
 			"-Dartifacts.MpsServer-launcher=${mpsServerLauncherDir(project)}",
+			"-Dartifacts.MpsServer-extensionkit=${mpsServerExtensionDir(project)}",
 			"-Dartifacts.mps=${artifactsDir(project).getAbsolutePath()}/mps",
 			"-Dartifacts.root=${artifactsDir(project).getAbsolutePath()}",
 		]
@@ -287,6 +293,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 					def xml = new MarkupBuilder(new IndentPrinter(writer, "    ", true))
 					def mpsDir = project.mpsserver.mpsDir(project)
 					def mpsServerCoreDir = project.mpsserver.mpsServerCoreDir(project)
+					def mpsServerExtensionDir = project.mpsserver.mpsServerExtensionDir(project)
 					def mpsServerLauncherDir = project.mpsserver.mpsServerLauncherDir(project)
 					xml.doubleQuotes = true
 					xml.project(name:"MpsServer-launcher", default:"run.com.strumenta.mpsserver.launcher") {
@@ -310,6 +317,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 
 								library(file:"${mpsServerCoreDir}/MPSServer.core.plugin/languages/MPSServer.core.group/com.strumenta.mpsserver.deps.jar")
 								library(file:"${mpsServerCoreDir}/MPSServer.core.plugin/languages/MPSServer.core.group/com.strumenta.mpsserver.server.jar")
+								library(file:"${mpsServerExtensionDir}/MPSServer.extensionkit.plugin/languages/MPSServer.extensionkit.group/com.strumenta.mpsserver.extensionkit.jar")
 
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/closures.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/collections.runtime.jar")
