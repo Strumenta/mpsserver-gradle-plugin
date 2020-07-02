@@ -152,7 +152,7 @@ class MpsServerGradlePluginExtension {
 	}
 
 	File mpsDir(project) {
-		return project.hasProperty('mpsPath') ? new File("${mpsPath}") : new File(artifactsDir(project), 'mps')		
+		return project.hasProperty('mpsPath') ? new File(project.property('mpsPath')) : new File(artifactsDir(project), 'mps')		
 	}
 
 	File mpsServerCoreDir(project) {
@@ -258,9 +258,6 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 					mps "com.jetbrains:mps:${project.mpsserver.mpsVersion}"
 				}
 			}
-//			if (mpsConf.resolve().size() == 0) {
-//				throw new GradleException('mps configuration present but empty')
-//			}
 		}
 	}
 
@@ -269,10 +266,6 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 		def extension = project.extensions.create('mpsserver', MpsServerGradlePluginExtension)
 
 		println("<Applying MpsServer plugin to project>")
-		//checkAntLibImpl(project)
-		//checkMps(project)
-
-
 		project.task('checkAntLib') {
 			doLast {
 				checkAntLibImpl(project)
@@ -281,22 +274,6 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 
 		project.task('resolveMps', type: ResolveMps)
 		project.task('resolveMpsArtifacts', type: ResolveMpsArtifacts)
-
-//        project.task('resolveMpsArtifacts', type: Copy) {
-//			doLast {
-//				def mpsArtifactsConf = project.configurations.getAll().find { it.name == 'mpsArtifacts' }
-//				def mpsArtifactsFound = mpsArtifactsConf != null
-//				if (!mpsArtifactsFound) {
-//					println("no mpsArtifacts configuration, assuming no dependencies to other plugins")
-//					return
-//				}
-//				from {
-//					project.configurations.mpsArtifacts.resolve().collect { project.zipTree(it) }
-//				}
-//				into project.mpsserver.artifactsDir(
-//						project)
-//			}
-//        }
         project.task('setuplocal') {
         	dependsOn project.resolveMps, project.resolveMpsArtifacts
         }
