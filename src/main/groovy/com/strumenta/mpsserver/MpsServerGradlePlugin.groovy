@@ -143,7 +143,7 @@ class ResolveMpsArtifacts extends DefaultTask {
 
 class MpsServerGradlePluginExtension {
     String mpsVersion = '2019.3.1'
-	String mpsServerVersion = '1.1.0-rc1'
+	String mpsServerVersion = '1.2.2'
 	String antVersion = '1.10.1'
 	File customMpsProjectPath = null
 	
