@@ -185,7 +185,7 @@ class MpsServerGradlePluginExtension {
 			"-Dartifacts.MpsServer-core=${mpsServerCoreDir(project)}",
 			"-Dartifacts.MpsServer-launcher=${mpsServerLauncherDir(project)}",
 			"-Dartifacts.MpsServer-extensionkit=${mpsServerExtensionDir(project)}",
-			"-Dartifacts.mps=${artifactsDir(project).getAbsolutePath()}/mps",
+			"-Dartifacts.mps=${mpsDir(project)}",
 			"-Dartifacts.root=${artifactsDir(project).getAbsolutePath()}",
 		]
 	}
