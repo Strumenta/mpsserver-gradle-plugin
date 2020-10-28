@@ -445,5 +445,19 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 				}
 			}
 		}
+		project.task('justLaunchMpsServer', dependsOn: []) {
+			dependsOn project.checkAntLib
+			doLast {
+				project.javaexec {
+					environment('MPSSERVER_PROJECT_FILE_PATH', project.mpsserver.mpsProjectPath(project))
+					main = "org.apache.tools.ant.launch.Launcher"
+					workingDir = project.rootDir
+					classpath(project.mpsserver.buildScriptClasspath(project))
+					args(project.mpsserver.antScriptArgs(project))
+					args("-buildfile", project.mpsserver.mpsServerAntBuildScript(project))
+					args(['run.com.strumenta.mpsserver.launcher'])
+				}
+			}
+		}
     }
 }
