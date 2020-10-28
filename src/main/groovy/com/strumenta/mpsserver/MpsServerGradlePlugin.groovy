@@ -5,11 +5,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileVisitDetails
 import org.gradle.api.file.FileVisitor
-import org.gradle.api.internal.file.copy.FileCopyAction
-import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskAction
 
 import java.nio.file.Files
@@ -17,26 +14,24 @@ import java.nio.file.Files
 class ResolveMps extends DefaultTask {
 
 	void checkMpsImpl() {
-		if (!project.hasProperty('mpsPath')) {
-			println "Downloading MPS in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
-			def mpsConf = project.configurations.getAll().find { it.name == 'mps' }
-			def mpsFound = mpsConf != null
-			if (!mpsFound) {
-				println("adding mps to configurations")
-				project.configurations {
-					mps
-				}
-				mpsConf = project.configurations.getAll().find { it.name == 'mps' }
-				mpsFound = mpsConf != null
-				if (!mpsFound) {
-					throw new GradleException("no mps configuration")
-				}
+		println "Downloading MPS in ${project.mpsserver.mpsDir(project).getAbsolutePath()}"
+		def mpsConf = project.configurations.getAll().find { it.name == 'mps' }
+		def mpsFound = mpsConf != null
+		if (!mpsFound) {
+			println("adding mps to configurations")
+			project.configurations {
+				mps
 			}
-			if (mpsConf.getAllDependencies().isEmpty()) {
-				println("no mps configuration dependency, adding default one")
-				project.dependencies {
-					mps "com.jetbrains:mps:${project.mpsserver.mpsVersion}"
-				}
+			mpsConf = project.configurations.getAll().find { it.name == 'mps' }
+			mpsFound = mpsConf != null
+			if (!mpsFound) {
+				throw new GradleException("no mps configuration")
+			}
+		}
+		if (mpsConf.getAllDependencies().isEmpty()) {
+			println("no mps configuration dependency, adding default one")
+			project.dependencies {
+				mps "com.jetbrains:mps:${project.mpsserver.mpsVersion}"
 			}
 		}
 	}
