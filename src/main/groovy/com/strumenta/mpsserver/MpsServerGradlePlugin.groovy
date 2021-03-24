@@ -139,7 +139,7 @@ class ResolveMpsArtifacts extends DefaultTask {
 
 class MpsServerGradlePluginExtension {
     String mpsVersion = '2019.3.1'
-	String mpsServerVersion = '1.2.8'
+	String mpsServerVersion = '2019.3.9'
 	String antVersion = '1.10.1'
 	File customMpsProjectPath = null
 	
@@ -152,15 +152,15 @@ class MpsServerGradlePluginExtension {
 	}
 
 	File mpsServerCoreDir(project) {
-		return new File("${artifactsDir(project).getAbsolutePath()}/MpsServer-core")
+		return new File("${artifactsDir(project).getAbsolutePath()}/mpsserver-core")
 	}
 
 	File mpsServerExtensionDir(project) {
-		return new File("${artifactsDir(project).getAbsolutePath()}/MpsServer-extensionkit")
+		return new File("${artifactsDir(project).getAbsolutePath()}/mpsserver-extensionkit")
 	}
 
 	File mpsServerLauncherDir(project) {
-		return new File("${artifactsDir(project).getAbsolutePath()}/MpsServer-launcher")
+		return new File("${artifactsDir(project).getAbsolutePath()}/mpsserver-launcher")
 	}
 
 	File mpsServerAntBuildScript(project) {
@@ -182,9 +182,9 @@ class MpsServerGradlePluginExtension {
 
 	Object antScriptArgs(project) {
 		return [
-			"-Dartifacts.MpsServer-core=${mpsServerCoreDir(project)}",
-			"-Dartifacts.MpsServer-launcher=${mpsServerLauncherDir(project)}",
-			"-Dartifacts.MpsServer-extensionkit=${mpsServerExtensionDir(project)}",
+			"-Dartifacts.mpsserver-core=${mpsServerCoreDir(project)}",
+			"-Dartifacts.mpsserver-launcher=${mpsServerLauncherDir(project)}",
+			"-Dartifacts.mpsserver-extensionkit=${mpsServerExtensionDir(project)}",
 			"-Dartifacts.mps=${mpsDir(project)}",
 			"-Dartifacts.root=${artifactsDir(project).getAbsolutePath()}",
 		]
@@ -291,7 +291,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 					def mpsServerExtensionDir = project.mpsserver.mpsServerExtensionDir(project)
 					def mpsServerLauncherDir = project.mpsserver.mpsServerLauncherDir(project)
 					xml.doubleQuotes = true
-					xml.project(name:"MpsServer-launcher", default:"run.com.strumenta.mpsserver.launcher") {
+					xml.project(name:"mpsserver-launcher", default:"run.com.strumenta.mpsserver.launcher") {
 						path(id:'path.mps.ant.path') {
 				  			pathelement(location:"${mpsDir.getAbsolutePath()}/lib/ant/lib/ant-mps.jar")
 				  			pathelement(location:"${mpsDir.getAbsolutePath()}/lib/jdom.jar")
@@ -305,14 +305,14 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 							runMPS(solution:"3228605e-7b74-4057-911c-041cdcc16947(com.strumenta.mpsserver.launcher)", 
 									startClass:"com.strumenta.mpsserver.launcher.MainClass", startMethod:"mpsMain") {
 
-								plugin( path:"${mpsServerCoreDir}/MPSServer.core.plugin", id:"MPSServer.core.plugin")
+								plugin( path:"${mpsServerCoreDir}/mpsserver.core.plugin", id:"mpsserver.core.plugin")
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-build", id:"jetbrains.mps.build")
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-core", id:"jetbrains.mps.core")
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-testing", id:"jetbrains.mps.testing")
 
-								library(file:"${mpsServerCoreDir}/MPSServer.core.plugin/languages/MPSServer.core.group/com.strumenta.mpsserver.deps.jar")
-								library(file:"${mpsServerCoreDir}/MPSServer.core.plugin/languages/MPSServer.core.group/com.strumenta.mpsserver.server.jar")
-								library(file:"${mpsServerExtensionDir}/MPSServer.extensionkit.plugin/languages/MPSServer.extensionkit.group/com.strumenta.mpsserver.extensionkit.jar")
+								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.deps.jar")
+								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.server.jar")
+								library(file:"${mpsServerExtensionDir}/mpsserver.extensionkit.plugin/languages/mpsserver.extensionkit.group/com.strumenta.mpsserver.extensionkit.jar")
 
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/closures.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/collections.runtime.jar")
