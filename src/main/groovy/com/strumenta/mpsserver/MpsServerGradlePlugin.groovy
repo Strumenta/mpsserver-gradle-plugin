@@ -310,9 +310,17 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-core", id:"jetbrains.mps.core")
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-testing", id:"jetbrains.mps.testing")
 
+								plugin( path:"${mpsDir.getAbsolutePath()}/lib/mps-workbench.jar", id:"com.intellij.modules.mps")
+								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/git4idea", id:"Git4Idea")
+								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-httpsupport", id:"jetbrains.mps.ide.httpsupport")
+								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-make", id:"jetbrains.mps.ide.make")
+								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs", id:"jetbrains.mps.vcs")
+								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/svn4idea", id:"Subversion")
+
 								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.deps.jar")
 								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.server.jar")
-								library(file:"${mpsServerExtensionDir}/mpsserver.extensionkit.plugin/languages/mpsserver.extensionkit.group/com.strumenta.mpsserver.extensionkit.jar")
+								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.extensionkit.jar")
+
 
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/closures.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/collections.runtime.jar")
@@ -335,6 +343,9 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/languages/baseLanguage/jetbrains.mps.baseLanguageInternal.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/editor/jetbrains.mps.editor.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/editor/jetbrains.mps.editorlang.runtime.jar")
+
+								library(file:"${mpsDir.getAbsolutePath()}/languages/editor/jetbrains.mps.ide.editor.jar")
+								library(file:"${mpsDir.getAbsolutePath()}/languages/editor/typesystemIntegration.jar")
 
 								library(file:"${mpsDir.getAbsolutePath()}/languages/languageDesign/jetbrains.mps.baseLanguage.lightweightdsl.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/languageDesign/jetbrains.mps.lang.access.jar")
@@ -375,6 +386,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/languages/languageDesign/jetbrains.mps.typesystemEngine.jar")
 
 								library(file:"${mpsDir.getAbsolutePath()}/languages/make/jetbrains.mps.make.facets.jar")
+								library(file:"${mpsDir.getAbsolutePath()}/languages/make/jetbrains.mps.make.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/make/jetbrains.mps.make.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/make/jetbrains.mps.smodel.resources.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/mps-stubs.jar")
@@ -382,6 +394,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/languages/plaf/jetbrains.mps.baseLanguage.util.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/plaf/jetbrains.mps.ide.platform.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/plaf/jetbrains.mps.ide.refactoring.platform.jar")
+								library(file:"${mpsDir.getAbsolutePath()}/languages/plaf/jetbrains.mps.ide.ui.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/runtimes/jetbrains.mps.analyzers.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/runtimes/jetbrains.mps.dataFlow.runtime.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/runtimes/jetbrains.mps.findUsages.runtime.jar")
@@ -400,6 +413,11 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/languages/util/jetbrains.mps.project.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/util/jetbrains.mps.refactoring.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/languages/util/jetbrains.mps.runtime.jar")
+
+								library(file:"${mpsDir.getAbsolutePath()}/languages/workbench-stub.jar")
+								library(file:"${mpsDir.getAbsolutePath()}/languages/workbench/jetbrains.mps.ide.jar")
+								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-make/languages/jetbrains.mps.ide.make.jar")
+
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-testing/languages/baseLanguage/jetbrains.mps.baseLanguage.unitTest.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-testing/languages/languageDesign/jetbrains.mps.lang.test.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-testing/languages/languageDesign/jetbrains.mps.lang.test.matcher.jar")
