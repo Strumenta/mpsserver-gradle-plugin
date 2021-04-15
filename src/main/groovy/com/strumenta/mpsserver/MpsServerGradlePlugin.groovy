@@ -142,6 +142,7 @@ class MpsServerGradlePluginExtension {
 	String mpsServerVersion = '2019.3.9'
 	String antVersion = '1.10.1'
 	File customMpsProjectPath = null
+	boolean openNoProject = false
 	
 	File artifactsDir(project) {
 		return new File(project.rootDir, 'artifacts')
@@ -168,6 +169,9 @@ class MpsServerGradlePluginExtension {
 	}
 
 	File mpsProjectPath(project) {
+		if (openNoProject) {
+			return null
+		}
 		if (customMpsProjectPath != null) {
 			return customMpsProjectPath;
 		}
