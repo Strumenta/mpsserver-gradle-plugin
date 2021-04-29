@@ -142,6 +142,7 @@ class MpsServerGradlePluginExtension {
 	String mpsServerVersion = '2019.3.9'
 	String antVersion = '1.10.1'
 	List<String> jvmArgs = []
+	List<String> additionalLibraries = []
 	File customMpsProjectPath = null
 	boolean openNoProject = false
 	
@@ -443,6 +444,10 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs/languages/jetbrains.mps.vcs.mergehints-generator.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs/languages/jetbrains.mps.devkit.aspect.vcs.jar")
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs/languages/jetbrains.mps.vcs.mergehints.jar")
+
+								extension.additionalLibraries.forEach {
+									library(file: it)
+								}
 
 								jvmargs() {
 									extension.jvmArgs.forEach {
