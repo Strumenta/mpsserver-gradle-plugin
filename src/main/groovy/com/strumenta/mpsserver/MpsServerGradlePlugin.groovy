@@ -145,6 +145,18 @@ class MpsServerGradlePluginExtension {
 	List<String> additionalLibraries = []
 	File customMpsProjectPath = null
 	boolean openNoProject = false
+
+	void addLibrary(library) {
+		additionalLibraries.add(library)
+	}
+
+	void addLibraryDir(File dir) {
+	    dir.eachFileRecurse { file ->
+	        if (file.getName().endsWith(".jar")) {
+	            this.addLibrary("${file.getAbsolutePath()}")
+	        }
+	    }		
+	}
 	
 	File artifactsDir(project) {
 		return new File(project.rootDir, 'artifacts')
