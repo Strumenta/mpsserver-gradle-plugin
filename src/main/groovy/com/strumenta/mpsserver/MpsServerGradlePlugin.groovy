@@ -142,20 +142,21 @@ class MpsServerGradlePluginExtension {
 	String mpsServerVersion = '2019.3.9'
 	String antVersion = '1.10.1'
 	List<String> jvmArgs = []
-	List<String> additionalLibraries = []
+	List<Object> additionalLibraries = []
 	File customMpsProjectPath = null
 	boolean openNoProject = false
 
-	void addLibrary(library) {
+	void addLibrary(String library) {
 		additionalLibraries.add(library)
 	}
 
 	void addLibraryDir(File dir) {
-	    dir.eachFileRecurse { file ->
-	        if (file.getName().endsWith(".jar")) {
-	            this.addLibrary("${file.getAbsolutePath()}")
-	        }
-	    }		
+		additionalLibraries.add(dir)
+	    // dir.eachFileRecurse { file ->
+	    //     if (file.getName().endsWith(".jar")) {
+	    //         this.addLibrary("${file.getAbsolutePath()}")
+	    //     }
+	    // }		
 	}
 	
 	File artifactsDir(project) {
@@ -458,7 +459,19 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs/languages/jetbrains.mps.vcs.mergehints.jar")
 
 								extension.additionalLibraries.forEach {
-									library(file: it)
+									if (it is String){
+										println(" -> library ${it}")										
+										library(file: it)
+									} else if (it is File) {
+										it.eachFileRecurse { file ->
+											println(" -> considering library dir ${file} in ${it}")
+											if (file.getName().endsWith(".jar")) {
+												this.addLibrary("${file.getAbsolutePath()}")
+											}
+										}		
+									} else {
+										println("ignoring additionalLibraries ${it}")
+									}
 								}
 
 								jvmargs() {
