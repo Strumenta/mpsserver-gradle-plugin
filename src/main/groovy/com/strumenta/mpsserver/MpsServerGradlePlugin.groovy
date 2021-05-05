@@ -459,10 +459,10 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								library(file:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs/languages/jetbrains.mps.vcs.mergehints.jar")
 
 								extension.additionalLibraries.forEach {
-									if (it is String){
+									if (it instanceof String){
 										println(" -> library ${it}")										
 										library(file: it)
-									} else if (it is File) {
+									} else if (it instanceof File) {
 										it.eachFileRecurse { file ->
 											println(" -> considering library dir ${file} in ${it}")
 											if (file.getName().endsWith(".jar")) {
