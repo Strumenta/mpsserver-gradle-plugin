@@ -466,7 +466,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 										it.eachFileRecurse { file ->
 											println(" -> considering library dir ${file} in ${it}")
 											if (file.getName().endsWith(".jar")) {
-												this.addLibrary("${file.getAbsolutePath()}")
+												this.addLibrary(file:"${file.getAbsolutePath()}")
 											}
 										}		
 									} else {
