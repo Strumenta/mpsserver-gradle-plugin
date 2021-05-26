@@ -460,17 +460,26 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 
 								extension.additionalLibraries.forEach {
 									if (it instanceof String){
-										println(" -> library ${it}")										
-										library(file: it)
+										logger.info(" -> library ${it}")
+										def f = new File(it)
+										if (f.exists()) {
+											library(file: it)
+										} else {
+											logger.warn("Provided library does not exist: ${f.absolutePath}")
+										}
 									} else if (it instanceof File) {
-										it.eachFileRecurse { file ->
-											println(" -> considering library dir ${file} in ${it}")
-											if (file.getName().endsWith(".jar")) {
-												library(file:"${file.getAbsolutePath()}")
+										if (it.exists()) {
+											it.eachFileRecurse { file ->
+												logger.info(" -> considering library dir ${file} in ${it}")
+												if (file.getName().endsWith(".jar")) {
+													library(file: "${file.getAbsolutePath()}")
+												}
 											}
-										}		
+										} else {
+											logger.warn("Provided library does not exist: ${it.absolutePath}")
+										}
 									} else {
-										println("ignoring additionalLibraries ${it}")
+										logger.error("ignoring additionalLibraries ${it}, as they are not a String or a File")
 									}
 								}
 
