@@ -143,6 +143,7 @@ class MpsServerGradlePluginExtension {
 	String antVersion = '1.10.1'
 	List<String> jvmArgs = []
 	List<Object> additionalLibraries = []
+	List<PluginConf> additionalPlugins = []
 	File customMpsProjectPath = null
 	boolean openNoProject = false
 
@@ -150,13 +151,15 @@ class MpsServerGradlePluginExtension {
 		additionalLibraries.add(library)
 	}
 
+	void addPlugin(String path, String id) {
+		def pc = new PluginConf()
+		pc.path = path
+		pc.id = id
+		additionalPlugins.add(pc)
+	}
+
 	void addLibraryDir(File dir) {
 		additionalLibraries.add(dir)
-	    // dir.eachFileRecurse { file ->
-	    //     if (file.getName().endsWith(".jar")) {
-	    //         this.addLibrary("${file.getAbsolutePath()}")
-	    //     }
-	    // }		
 	}
 	
 	File artifactsDir(project) {
@@ -164,7 +167,7 @@ class MpsServerGradlePluginExtension {
 	}
 
 	File mpsDir(project) {
-		return project.hasProperty('mpsPath') ? new File(project.property('mpsPath')) : new File(artifactsDir(project), 'mps')		
+		return project.hasProperty('mpsPath') ? new File(project.property('mpsPath')) : new File(artifactsDir(project), 'mps')
 	}
 
 	File mpsServerCoreDir(project) {
@@ -335,6 +338,15 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-make", id:"jetbrains.mps.ide.make")
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/mps-vcs", id:"jetbrains.mps.vcs")
 								plugin( path:"${mpsDir.getAbsolutePath()}/plugins/svn4idea", id:"Subversion")
+
+								extension.additionalPlugins.forEach {
+									def f = new File(it.path)
+									if (f.exists()) {
+										plugin(path: it.path, id: it.id)
+									} else {
+										logger.warn("Provided plugin does not exist: ${it}")
+									}
+								}
 
 								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.deps.jar")
 								library(file:"${mpsServerCoreDir}/mpsserver.core.plugin/languages/mpsserver.core.group/com.strumenta.mpsserver.server.jar")
