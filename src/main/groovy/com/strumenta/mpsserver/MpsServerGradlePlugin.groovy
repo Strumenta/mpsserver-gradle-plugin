@@ -144,11 +144,16 @@ class MpsServerGradlePluginExtension {
 	List<String> jvmArgs = []
 	List<Object> additionalLibraries = []
 	List<PluginConf> additionalPlugins = []
+	List<File> additionalPluginsDirs = []
 	File customMpsProjectPath = null
 	boolean openNoProject = false
 
 	void addLibrary(String library) {
 		additionalLibraries.add(library)
+	}
+
+	void addPluginDir(File dir) {
+		additionalPluginsDirs.add(dir)
 	}
 
 	void addPlugin(String path, String id) {
@@ -345,6 +350,21 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 										plugin(path: it.path, id: it.id)
 									} else {
 										logger.warn("Provided plugin does not exist: ${it}")
+									}
+								}
+
+								extension.additionalPluginsDirs.forEach {
+									if (it.exists()) {
+										it.eachFileRecurse(groovy.io.FileType.FILES) {
+											if (it.name == "plugin.xml") {
+												def xmlCode = new XmlSlurper().parseText( it.getText() )
+												def id = xmlCode.id.text()
+												def dir = it.getParentFile().getParentFile()
+												plugin(path: dir.getAbsolutePath(), id: id)
+											}
+										}
+									} else {
+										logger.warn("Provided plugin dir does not exist: ${it}")
 									}
 								}
 
