@@ -349,7 +349,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 									if (f.exists()) {
 										plugin(path: it.path, id: it.id)
 									} else {
-										logger.warn("Provided plugin does not exist: ${it}")
+										logger.warn("Provided plugin does not exist: ${it.path} (${it.id})")
 									}
 								}
 
