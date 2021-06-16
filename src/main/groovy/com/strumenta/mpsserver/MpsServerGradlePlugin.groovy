@@ -303,6 +303,14 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 		}
 	}
 
+	private addTaskIfDoesNotExist(Project project, String name, Class<?> clazz, MpsServerGradlePluginExtension extension) {
+		if (project.tasks.findByName(name) != null) {
+			println("not adding $name task, as it exists already")
+		} else {
+			project.tasks.register(name, clazz, this, extension)
+		}
+	}
+
     void apply(Project project) {
 
 		def extension = project.extensions.create('mpsserver', MpsServerGradlePluginExtension)
@@ -314,8 +322,8 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 			}
 		}
 
-		project.task('resolveMps', type: ResolveMps)
-		project.task('resolveMpsArtifacts', type: ResolveMpsArtifacts)
+		addTaskIfDoesNotExist(project, 'resolveMps', ResolveMps, extension)
+		addTaskIfDoesNotExist(project, 'resolveMpsArtifacts', ResolveMpsArtifacts, extension)
         project.task('setuplocal') {
         	dependsOn project.resolveMps, project.resolveMpsArtifacts
         }
