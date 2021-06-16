@@ -369,7 +369,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 
 								extension.additionalPluginsDirs.forEach { entry ->
 									if (entry.dir.exists()) {
-										it.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+										entry.dir.eachFileRecurse(groovy.io.FileType.FILES) { file ->
 											if (file.name == "plugin.xml") {
 												def xmlCode = new XmlSlurper().parseText(file.getText())
 												def id = xmlCode.id.text()
