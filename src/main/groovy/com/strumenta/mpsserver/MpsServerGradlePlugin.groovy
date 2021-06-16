@@ -374,7 +374,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 												def xmlCode = new XmlSlurper().parseText(file.getText())
 												def id = xmlCode.id.text()
 												if (!entry.idsToExclude.contains(id)) {
-													def dir = entry.dir.getParentFile().getParentFile()
+													def dir = file.getParentFile().getParentFile()
 													plugin(path: dir.getAbsolutePath(), id: id)
 												}
 											}
