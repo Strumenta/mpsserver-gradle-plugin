@@ -138,13 +138,23 @@ class ResolveMpsArtifacts extends DefaultTask {
 }
 
 class MpsServerGradlePluginExtension {
+
+	private class PluginsEntry {
+		File dir;
+		List<String> idsToExclude;
+		PluginsEntry(File dir, List<String> idsToExclude) {
+			this.dir = dir;
+			this.idsToExclude = idsToExclude;
+		}
+	}
+
     String mpsVersion = '2019.3.1'
 	String mpsServerVersion = '2019.3.9'
 	String antVersion = '1.10.1'
 	List<String> jvmArgs = []
 	List<Object> additionalLibraries = []
 	List<PluginConf> additionalPlugins = []
-	List<File> additionalPluginsDirs = []
+	List<PluginsEntry> additionalPluginsDirs = []
 	File customMpsProjectPath = null
 	boolean openNoProject = false
 
@@ -153,7 +163,11 @@ class MpsServerGradlePluginExtension {
 	}
 
 	void addPluginDir(File dir) {
-		additionalPluginsDirs.add(dir)
+		addPluginDir(dir, Collections.emptyList())
+	}
+
+	void addPluginDir(File dir, List<String> idsToExclude) {
+		additionalPluginsDirs.add(new PluginsEntry(dir, idsToExclude))
 	}
 
 	void addPlugin(String path, String id) {
@@ -353,14 +367,16 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 									}
 								}
 
-								extension.additionalPluginsDirs.forEach {
-									if (it.exists()) {
-										it.eachFileRecurse(groovy.io.FileType.FILES) {
-											if (it.name == "plugin.xml") {
-												def xmlCode = new XmlSlurper().parseText( it.getText() )
+								extension.additionalPluginsDirs.forEach { entry ->
+									if (entry.dir.exists()) {
+										it.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+											if (file.name == "plugin.xml") {
+												def xmlCode = new XmlSlurper().parseText(file.getText())
 												def id = xmlCode.id.text()
-												def dir = it.getParentFile().getParentFile()
-												plugin(path: dir.getAbsolutePath(), id: id)
+												if (!entry.idsToExclude.contains(id)) {
+													def dir = it.getParentFile().getParentFile()
+													plugin(path: dir.getAbsolutePath(), id: id)
+												}
 											}
 										}
 									} else {
