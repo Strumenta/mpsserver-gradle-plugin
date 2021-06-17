@@ -14,9 +14,19 @@ class MpsServerGradlePluginExtension {
     }
 
     String mpsVersion = '2020.3.3'
-    String mpsServerVersion = '2020.3-12'
+    String mpsServerVersion
+
+    String getMpsServerVersion() {
+        if (this.mpsServerVersion == null) {
+            return '2020.3-12';
+        } else {
+            return this.mpsServerVersion;
+        }
+    }
+
     String antVersion = '1.10.1'
     List<String> jvmArgs = []
+    String extensionsPath = null
     List<Object> additionalLibraries = []
     List<PluginConf> additionalPlugins = []
     List<PluginsEntry> additionalPluginsDirs = []

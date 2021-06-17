@@ -304,8 +304,14 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 		project.task('launchMpsServer', dependsOn: [project.resolveMps, project.resolveMpsArtifacts, project.generateAntBuildForMpsServer]) {
 			dependsOn project.checkAntLib
 			doLast {
+				println("make project? ${project.mpsserver.makeProject}")
+				println("extensions path ${project.mpsserver.extensionsPath}")
 				project.javaexec {
 					environment('MPSSERVER_PROJECT_FILE_PATH', project.mpsserver.mpsProjectPath(project))
+					environment('MPSSERVER_MAKEPROJECT', project.mpsserver.makeProject)
+					if (project.mpsserver.extensionsPath != null) {
+						environment('MPSSERVER_EXTENSION_PATH', project.mpsserver.extensionsPath)
+					}
 					main = "org.apache.tools.ant.launch.Launcher"
 		            workingDir = project.rootDir
 		            classpath(project.mpsserver.buildScriptClasspath(project))
@@ -318,9 +324,14 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 		project.task('justLaunchMpsServer', dependsOn: []) {
 			dependsOn project.checkAntLib
 			doLast {
+				println("make project? ${project.mpsserver.makeProject}")
+				println("extensions path ${project.mpsserver.extensionsPath}")
 				project.javaexec {
 					environment('MPSSERVER_PROJECT_FILE_PATH', project.mpsserver.mpsProjectPath(project))
-					environment('MPSSERVER_MAKEPROJECT', extension.makeProject)
+					environment('MPSSERVER_MAKEPROJECT', project.mpsserver.makeProject)
+					if (project.mpsserver.extensionsPath != null) {
+						environment('MPSSERVER_EXTENSION_PATH', project.mpsserver.extensionsPath)
+					}
 					main = "org.apache.tools.ant.launch.Launcher"
 					workingDir = project.rootDir
 					classpath(project.mpsserver.buildScriptClasspath(project))
