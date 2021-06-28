@@ -304,8 +304,12 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 		project.task('launchMpsServer', dependsOn: [project.resolveMps, project.resolveMpsArtifacts, project.generateAntBuildForMpsServer]) {
 			dependsOn project.checkAntLib
 			doLast {
-				println("make project? ${project.mpsserver.makeProject}")
-				println("extensions path ${project.mpsserver.extensionsPath}")
+				println("[[ MPSServer configuration ]]")
+				println("  MPSServer version : ${project.mpsserver.getMpsServerVersion()}")
+				println("  project file      : ${project.mpsserver.mpsProjectPath(project)}")
+				println("  make project?     : ${project.mpsserver.makeProject}")
+				println("  extensions path   : ${project.mpsserver.extensionsPath}")
+				println()
 				project.javaexec {
 					environment('MPSSERVER_PROJECT_FILE_PATH', project.mpsserver.mpsProjectPath(project))
 					environment('MPSSERVER_MAKEPROJECT', project.mpsserver.makeProject)

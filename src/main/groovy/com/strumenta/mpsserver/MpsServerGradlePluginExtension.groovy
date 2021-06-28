@@ -18,7 +18,7 @@ class MpsServerGradlePluginExtension {
 
     String getMpsServerVersion() {
         if (this.mpsServerVersion == null) {
-            return '2020.3-12';
+            return '2020.3-13';
         } else {
             return this.mpsServerVersion;
         }
@@ -88,7 +88,13 @@ class MpsServerGradlePluginExtension {
         if (customMpsProjectPath != null) {
             return customMpsProjectPath;
         }
-        return new File("${project.rootDir}")
+        def rootDir = new File("${project.rootDir}")
+        def mpsDir = new File(rootDir, "mps")
+        if (mpsDir.exists()) {
+            return mpsDir
+        } else {
+            return rootDir
+        }
     }
 
     Object buildScriptClasspath(project) {
