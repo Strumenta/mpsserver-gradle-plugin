@@ -58,7 +58,7 @@ class MpsServerGradlePlugin implements Plugin<Project> {
 		if (project.tasks.findByName(name) != null) {
 			println("not adding $name task, as it exists already")
 		} else {
-			project.tasks.register(name, clazz, this, extension)
+			project.tasks.register(name, clazz)
 		}
 	}
 
