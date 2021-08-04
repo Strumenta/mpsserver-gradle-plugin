@@ -66,19 +66,19 @@ class MpsServerGradlePluginExtension {
     }
 
     File mpsServerCoreDir(project) {
-        return new File("${artifactsDir(project).getAbsolutePath()}/mpsserver-core")
+        return new File("${artifactsDir(project).getAbsolutePath()}${File.separator}mpsserver-core")
     }
 
     File mpsServerExtensionDir(project) {
-        return new File("${artifactsDir(project).getAbsolutePath()}/mpsserver-extensionkit")
+        return new File("${artifactsDir(project).getAbsolutePath()}${File.separator}mpsserver-extensionkit")
     }
 
     File mpsServerLauncherDir(project) {
-        return new File("${artifactsDir(project).getAbsolutePath()}/mpsserver-launcher")
+        return new File("${artifactsDir(project).getAbsolutePath()}${File.separator}mpsserver-launcher")
     }
 
     File mpsServerAntBuildScript(project) {
-        return new File("${project.buildDir}/build-launcher.xml")
+        return new File("${project.buildDir}${File.separator}build-launcher.xml")
     }
 
     File mpsProjectPath(project) {
@@ -100,7 +100,7 @@ class MpsServerGradlePluginExtension {
     Object buildScriptClasspath(project) {
         return project.configurations.ant_lib.fileCollection({
             true
-        }) + project.files("${jdkHome(project)}/lib/tools.jar")
+        }) + project.files("${jdkHome(project)}${File.separator}lib${File.separator}tools.jar")
     }
 
     Object antScriptArgs(project) {
@@ -119,12 +119,13 @@ class MpsServerGradlePluginExtension {
             def jdk_home = java_home
 
             // In JDK >=11 we look for javac
-            if (!project.file("$jdk_home/bin/javac").isFile() && !file("$jdk_home/bin/javac.exe").isFile()) {
+            def SEP = File.separator
+            if (!project.file("$jdk_home$SEPbin$SEPjavac").isFile() && !file("$jdk_home$SEPbin$SEPjavac.exe").isFile()) {
                 // In JDK <11 we look for the tools.jar
-                if (!file("$jdk_home/lib/tools.jar").isFile()) {
-                    jdk_home = jdk_home + "/.."
+                if (!file("$jdk_home$SEPlib$SEPtools.jar").isFile()) {
+                    jdk_home = jdk_home + "$SEP.."
                 }
-                if (!file("$jdk_home/lib/tools.jar").isFile()) {
+                if (!file("$jdk_home$SEPlib$SEPtools.jar").isFile()) {
                     throw new GradleException("Not finding the JDK...")
                 }
             }

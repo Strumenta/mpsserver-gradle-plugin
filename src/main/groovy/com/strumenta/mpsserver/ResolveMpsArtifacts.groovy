@@ -59,7 +59,7 @@ class ResolveMpsArtifacts extends DefaultTask {
 
                 @Override
                 void visitFile(FileVisitDetails fileVisitDetails) {
-                    File dstFile = new File("${project.mpsserver.artifactsDir(project).getAbsolutePath()}/${fileVisitDetails.relativePath}")
+                    File dstFile = new File("${project.mpsserver.artifactsDir(project).getAbsolutePath()}${File.separator}${fileVisitDetails.relativePath}")
                     if (!dstFile.parentFile.exists()) {
                         dstFile.parentFile.mkdirs()
                     }

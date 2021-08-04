@@ -56,7 +56,7 @@ class ResolveMps extends DefaultTask {
 
                     @Override
                     void visitFile(FileVisitDetails fileVisitDetails) {
-                        File dstFile = new File("${project.mpsserver.mpsDir(project).getAbsolutePath()}/${fileVisitDetails.relativePath}")
+                        File dstFile = new File("${project.mpsserver.mpsDir(project).getAbsolutePath()}${File.separator}${fileVisitDetails.relativePath}")
                         if (!dstFile.parentFile.exists()) {
                             dstFile.parentFile.mkdirs()
                         }
