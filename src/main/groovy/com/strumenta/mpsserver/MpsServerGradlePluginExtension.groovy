@@ -120,7 +120,7 @@ class MpsServerGradlePluginExtension {
 
             // In JDK >=11 we look for javac
             def SEP = File.separator
-            if (!project.file("${jdk_home}${SEP}bin${SEP}javac").isFile() && !file("${jdk_home}${SEP}bin${SEP}javac.exe").isFile()) {
+            if (!project.file("${jdk_home}${SEP}bin${SEP}javac").isFile() && !project.file("${jdk_home}${SEP}bin${SEP}javac.exe").isFile()) {
                 // In JDK <11 we look for the tools.jar
                 if (!file("${jdk_home}${SEP}lib${SEP}tools.jar").isFile()) {
                     jdk_home = jdk_home + "${SEP}.."
